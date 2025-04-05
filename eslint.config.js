@@ -2,28 +2,29 @@ import { defineConfig } from 'eslint/config'
 import globals from 'globals'
 import js from '@eslint/js'
 import tseslint from 'typescript-eslint'
-import solid from 'eslint-plugin-solid'
-import prettierConfig from 'eslint-config-prettier'
-import typescriptEslint from '@typescript-eslint/eslint-plugin'
+import pluginSolid from 'eslint-plugin-solid'
+import prettier from 'eslint-config-prettier'
 
 export default defineConfig([
-    { files: ['**/*.{js,mjs,cjs,ts,tsx,jsx'] },
     {
-        files: ['**/*.{js,mjs,cjs,ts,tsx,jsx}'],
-        languageOptions: { globals: globals.browser },
+        files: ['src/**/*.{js,mjs,cjs,ts,jsx,tsx}'],
+        ignores: ['**/*.test.{js,mjs,cjs,ts,jsx,tsx}'],
     },
     {
-        files: ['**/*.{js,mjs,cjs,ts,tsx,jsx}'],
-        plugins: { js },
-        extends: ['js/recommended'],
+        files: ['src/**/*.{js,mjs,cjs,ts,jsx,tsx}'],
+        ignores: ['**/*.test.{js,mjs,cjs,ts,jsx,tsx}'],
+        languageOptions: { globals: { ...globals.browser, ...globals.node } },
     },
     {
-        plugins: {
-            typescriptEslint,
-            prettierConfig,
-            solid,
-        },
-        ignores: ['node_modules', 'dist', 'public', 'src-tauri'],
+        files: ['src/**/*.{js,mjs,cjs,ts,jsx,tsx}'],
+        ignores: ['**/*.test.{js,mjs,cjs,ts,jsx,tsx}'],
+        plugins: { js, tseslint, pluginSolid, prettier },
+        extends: [
+            'js/recommended',
+            'tseslint/strict',
+            'pluginSolid/typescript',
+            'pluginSolid/recommended',
+        ],
     },
-    tseslint.configs.recommended,
 ])
+

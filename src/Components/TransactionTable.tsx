@@ -1,4 +1,4 @@
-import { Component } from 'solid-js'
+import { Component, For } from 'solid-js'
 import { ITransactionDetail } from '../Types/TransactionDetail'
 
 type TransactionTableProps = {
@@ -22,15 +22,17 @@ const TransactionTable: Component<TransactionTableProps> = (props) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {props.transactionList.map((transaction) => (
-                            <tr>
-                                <td>{transaction.id}</td>
-                                <td>{transaction.name}</td>
-                                <td>{transaction.accountNumber}</td>
-                                <td>{transaction.ifscCode}</td>
-                                <td>{transaction.amount}</td>
-                            </tr>
-                        ))}
+                        <For each={props.transactionList}>
+                            {(transaction) => (
+                                <tr>
+                                    <td>{transaction.id}</td>
+                                    <td>{transaction.name}</td>
+                                    <td>{transaction.accountNumber}</td>
+                                    <td>{transaction.ifscCode}</td>
+                                    <td>{transaction.amount}</td>
+                                </tr>
+                            )}
+                        </For>
                     </tbody>
                 </table>
             </div>

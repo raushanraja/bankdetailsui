@@ -1,4 +1,5 @@
 import { Component } from 'solid-js'
+import { For } from 'solid-js'
 import { IBankDetail } from '../Types/BankDetail'
 
 type BankDetailsTableProps = {
@@ -23,15 +24,17 @@ const BankDetailsTable: Component<BankDetailsTableProps> = (props) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {props.detailsList.map((detail) => (
-                            <tr>
-                                <td>{detail.serialNubmer}</td>
-                                <td>{detail.id}</td>
-                                <td>{detail.name}</td>
-                                <td>{detail.accountNumber}</td>
-                                <td>{detail.ifscCode}</td>
-                            </tr>
-                        ))}
+                        <For each={props.detailsList}>
+                            {(detail) => (
+                                <tr>
+                                    <td>{detail.serialNubmer}</td>
+                                    <td>{detail.id}</td>
+                                    <td>{detail.name}</td>
+                                    <td>{detail.accountNumber}</td>
+                                    <td>{detail.ifscCode}</td>
+                                </tr>
+                            )}
+                        </For>
                     </tbody>
                 </table>
             </div>
