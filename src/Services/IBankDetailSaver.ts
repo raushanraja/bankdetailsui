@@ -28,6 +28,7 @@ export class AutoSavedInfo {
         return JSON.stringify({
             total: this.total,
             lastversion: this.lastVersion,
+            firstVersion: this.firstVersion,
             lastSaved: this.lastSaved,
         })
     }
