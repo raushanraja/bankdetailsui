@@ -4,7 +4,7 @@ import { faker } from '@faker-js/faker'
 
 function createFakeBankDetails(): IBankDetailStorage[] {
     const bankDetails: IBankDetailStorage[] = []
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 200; i++) {
         bankDetails.push({
             id: i,
             name: 'bankDetails',
@@ -31,7 +31,7 @@ describe('AutoSaver BankDetails', () => {
 
     beforeEach(() => {
         key = 'bankDetails'
-        maxVersions = 10
+        maxVersions = 200 // Update maxVersions to 200
         autoSaver = new AutoSaver(key, maxVersions)
         bankDetails = createFakeBankDetails()
     })
@@ -78,7 +78,7 @@ describe('AutoSaver BankDetails', () => {
     })
 
     test('should limit the number of versions', async () => {
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < 200; i++) {
             await autoSaver.save(bankDetails[i % bankDetails.length])
         }
         const versionCount = await autoSaver.getVersionCount()
@@ -86,7 +86,7 @@ describe('AutoSaver BankDetails', () => {
     })
 
     test('should retrieve all versions', async () => {
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < 200; i++) {
             await autoSaver.save(bankDetails[i % bankDetails.length])
         }
         const versions = await autoSaver.getAllSavedVersions()
@@ -97,11 +97,12 @@ describe('AutoSaver BankDetails', () => {
         const expectedVersions = bankDetails
             .slice(0, maxVersions)
             .map((bd) => bd.data[0])
+        console.log(expectedVersions.length, savedVersions.length)
         expect(savedVersions).toEqual(expectedVersions)
     })
 
     test('should overwrite the oldest keys when exceeding maxVersions', async () => {
-        for (let i = 0; i < 15; i++) {
+        for (let i = 0; i < 250; i++) {
             await autoSaver.save(bankDetails[i % bankDetails.length])
         }
         const versionCount = await autoSaver.getVersionCount()
@@ -129,6 +130,52 @@ describe('AutoSaver BankDetails', () => {
         expect(fetchedInfo.total).toEqual(5)
         expect(fetchedInfo.lastSaved).toBeInstanceOf(Date)
         expect(fetchedInfo.lastSaved).toEqual(date)
+    })
+
+    test('should clear old versions', async () => {
+        for (let i = 0; i < 15; i++) {
+            await autoSaver.save(bankDetails[i % bankDetails.length])
+        }
+        await autoSaver.clearOldVersions()
+        const versionCount = await autoSaver.getVersionCount()
+        expect(versionCount).toBeLessThanOrEqual(maxVersions)
+
+        const versions = await autoSaver.getAllSavedVersions()
+        expect(versions.length).toBeLessThanOrEqual(maxVersions)
+    })
+
+    test('should return the correct version count', async () => {
+        for (let i = 0; i < 5; i++) {
+            await autoSaver.save(bankDetails[i % bankDetails.length])
+        }
+        const versionCount = await autoSaver.getVersionCount()
+        expect(versionCount).toEqual(5)
+    })
+
+    test('should generate the next version key correctly', async () => {
+        const nextVersionKey = await autoSaver.getNextVersionKey()
+        expect(nextVersionKey).toEqual(`${key}-1`)
+
+        await autoSaver.save(bankDetails[0])
+        const updatedNextVersionKey = await autoSaver.getNextVersionKey()
+        expect(updatedNextVersionKey).toEqual(`${key}-2`)
+    })
+
+    test('should convert AutoSavedInfo to JSON and back', () => {
+        const autoSaveInfo = new AutoSavedInfo()
+        autoSaveInfo.total = 5
+        autoSaveInfo.firstVersion = 1
+        autoSaveInfo.lastVersion = 5
+        autoSaveInfo.lastSaved = new Date()
+
+        const json = autoSaveInfo.toJSON()
+        const parsedInfo = AutoSavedInfo.fromJSON(json)
+
+        expect(parsedInfo).toBeDefined()
+        expect(parsedInfo.total).toEqual(autoSaveInfo.total)
+        expect(parsedInfo.firstVersion).toEqual(autoSaveInfo.firstVersion)
+        expect(parsedInfo.lastVersion).toEqual(autoSaveInfo.lastVersion)
+        expect(parsedInfo.lastSaved).toEqual(autoSaveInfo.lastSaved)
     })
 
 })

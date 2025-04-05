@@ -15,7 +15,6 @@ const Navigation = (props: NavigationProps) => {
     const [bankActive, setBankActive] = createSignal(true)
 
     createEffect(() => {
-        console.log('Location changed:', location.pathname)
         setBankActive(location.pathname === `${BASE_PATH}new-bank-transactions`)
     })
 

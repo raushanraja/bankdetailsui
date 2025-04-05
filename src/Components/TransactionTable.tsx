@@ -8,24 +8,20 @@ type TransactionTableProps = {
 }
 
 const TransactionTable: Component<TransactionTableProps> = (props) => {
-    const autosaver = new AutoSaver<ITransactionDetailStorage>('bankTransactions', 10)
+    const autosaver = new AutoSaver<ITransactionDetailStorage>('bankTransactions', 200) // Update maxVersions to 200
 
     createEffect(() => {
-        const interval = setInterval(() => {
-            const data = props.transactionList
-            if (data.length > 0) {
-                const storage_data: ITransactionDetailStorage = {
-                    id: 0,
-                    name: 'bankTransactions',
-                    data,
-                }
-                autosaver.save(storage_data).then(() => {
-                    console.log('Transactions saved successfully')
-                })
+        const data = props.transactionList
+        if (data.length > 0) {
+            const storage_data: ITransactionDetailStorage = {
+                id: 0,
+                name: 'bankTransactions',
+                data,
             }
-        }, 3000)
-
-        onCleanup(() => clearInterval(interval))
+            autosaver.save(storage_data).then(() => {
+                console.log('Transactions saved successfully')
+            })
+        }
     })
 
     return (

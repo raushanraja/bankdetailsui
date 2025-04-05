@@ -9,9 +9,8 @@ type BankDetailsTableProps = {
 }
 
 const BankDetailsTable: Component<BankDetailsTableProps> = (props) => {
-    const autosaver = new AutoSaver<IBankDetailStorage>('bankDetails', 10)
+    const autosaver = new AutoSaver<IBankDetailStorage>('bankDetails', 200)
 
-    // Effect to save formData every 10 seconds if data is available
     createEffect(() => {
         const interval = setInterval(() => {
             const data = props.detailsList

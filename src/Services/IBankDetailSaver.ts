@@ -97,7 +97,7 @@ export class AutoSaver<T extends RequiredProperties> implements IAutoSaver<T> {
     private key: string
     private autoSavedInfo: AutoSavedInfo
 
-    constructor(key: string, maxVersions: number = 10) {
+    constructor(key: string, maxVersions: number = 200) { // Set maxVersions to 200
         this.key = key
         this.maxVersions = maxVersions
         this.autoSavedInfo = AutoSavedInfo.fromLocalStorage(key)
@@ -227,7 +227,6 @@ export class JsonDataSaver<T> implements IDataSaver<T> {
         }
 
         const jsonData = JSON.stringify(data, null, 2)
-        console.log('Saving to JSON:', jsonData)
         this.downloadJsonFile(jsonData)
     }
 }
@@ -239,7 +238,6 @@ export class ApiDataSaver<T> implements IDataSaver<T> {
     }
 
     async save(data: T[]): Promise<void> {
-        console.log('Saving to API:', data)
 
         if (!hasData(data)) {
             alert('No data to save')
