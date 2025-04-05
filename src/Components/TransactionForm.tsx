@@ -1,80 +1,68 @@
-import { createSignal, createEffect } from 'solid-js'
-import { IBankDetail } from '../Types/BankDetail'
+import { createSignal } from 'solid-js'
+import { ITransactionDetail } from '../Types/TransactionDetail'
 
-const BankDetailsForm = (props: {
-    addBankDetail: (detail: IBankDetail) => void
+const TransactionForm = (props: {
+    addTransaction: (detail: ITransactionDetail) => void
+    usedIds: Set<string>
 }) => {
     const [id, setId] = createSignal('')
-    const [serialNumber, setSerialNumber] = createSignal(1)
     const [name, setName] = createSignal('')
     const [accountNumber, setAccountNumber] = createSignal('')
     const [ifscCode, setIfscCode] = createSignal('')
-    const [formData, setFormData] = createSignal<IBankDetail>({
-        serialNubmer: 1,
-        id: '',
-        name: '',
-        accountNumber: '',
-        ifscCode: '',
-    })
+    const [amount, setAmount] = createSignal('')
 
-    // Effect to update formData whenever any field changes
-    createEffect(() => {
-        setFormData({
-            serialNubmer: serialNumber(),
-            id: id(),
-            name: name(),
-            accountNumber: accountNumber(),
-            ifscCode: ifscCode(),
-        })
-    })
-
-    const focusNextInput = (e: KeyboardEvent, nextInputId: string | null) => {
-        if (e.key === 'Enter') {
-            e.preventDefault()
-            if (nextInputId) {
-                document.getElementById(nextInputId)?.focus()
-            } else {
-                ;(
-                    document.querySelector(
-                        'button[type="submit"]',
-                    ) as HTMLButtonElement
-                )?.focus()
-            }
+    const fetchUserDetails = async (id: string) => {
+        // Simulate fetching user details from the backend
+        const response = await fetch(`/api/user/${id}`)
+        if (response.ok) {
+            const data = await response.json()
+            setName(data.name)
+            setAccountNumber(data.accountNumber)
+            setIfscCode(data.ifscCode)
+        } else {
+            alert('User not found')
         }
     }
 
     const handleSubmit = (e: Event) => {
         e.preventDefault()
-        props.addBankDetail(formData())
+        if (props.usedIds.has(id())) {
+            alert('This ID has already been used for a transaction.')
+            return
+        }
+        props.addTransaction({
+            id: id(),
+            name: name(),
+            accountNumber: accountNumber(),
+            ifscCode: ifscCode(),
+            amount: amount(),
+        })
         setId('')
         setName('')
         setAccountNumber('')
         setIfscCode('')
-        setSerialNumber((prev) => prev + 1)
+        setAmount('')
     }
 
     return (
         <div class="bg-base-300 w-150 rounded-lg px-5">
-            <h2 class="mb-4 w-40 text-2xl font-semibold">Bank Form</h2>
+            <h2 class="mb-4 w-40 text-2xl font-semibold">Transaction Form</h2>
             <div class="p-5">
                 <form class="space-y-4" onSubmit={handleSubmit}>
                     {/* ID */}
                     <div class="form-control">
                         <label class="label" for="id">
-                            <span class="label-text">ID (Max 5 Digits):</span>
+                            <span class="label-text">ID:</span>
                         </label>
                         <input
-                            type="number"
+                            type="text"
                             placeholder="Enter ID"
                             class="input input-bordered w-full"
-                            maxLength="5"
-                            min="1"
-                            max="99999"
                             required
                             id="id"
                             value={id()}
                             onInput={(e) => setId(e.currentTarget.value)}
-                            onKeyDown={(e) => focusNextInput(e, 'name')}
+                            onBlur={() => fetchUserDetails(id())}
                         />
                     </div>
 
@@ -91,9 +79,6 @@ const BankDetailsForm = (props: {
                             id="name"
                             value={name()}
                             onInput={(e) => setName(e.currentTarget.value)}
-                            onKeyDown={(e) =>
-                                focusNextInput(e, 'accountNumber')
-                            }
                         />
                     </div>
 
@@ -112,7 +97,6 @@ const BankDetailsForm = (props: {
                             onInput={(e) =>
                                 setAccountNumber(e.currentTarget.value)
                             }
-                            onKeyDown={(e) => focusNextInput(e, 'ifscCode')}
                         />
                     </div>
 
@@ -129,20 +113,35 @@ const BankDetailsForm = (props: {
                             id="ifscCode"
                             value={ifscCode()}
                             onInput={(e) => setIfscCode(e.currentTarget.value)}
-                            onKeyDown={(e) => focusNextInput(e, null)} // Update the last input field to focus the submit button
                         />
                     </div>
 
-                    <button
-                        class="btn btn-primary float-end w-full"
-                        type="submit"
-                    >
-                        Submit
-                    </button>
+                    {/* Amount */}
+                    <div class="form-control">
+                        <label class="label" for="amount">
+                            <span class="label-text">Amount:</span>
+                        </label>
+                        <input
+                            type="number"
+                            placeholder="Enter Amount"
+                            class="input input-bordered w-full"
+                            required
+                            id="amount"
+                            value={amount()}
+                            onInput={(e) => setAmount(e.currentTarget.value)}
+                        />
+                    </div>
+
+                    {/* Submit Button */}
+                    <div class="form-control mt-6">
+                        <button type="submit" class="btn btn-primary w-full">
+                            Submit
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>
     )
 }
 
-export default BankDetailsForm
+export default TransactionForm
