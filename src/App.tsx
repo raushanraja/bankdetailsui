@@ -4,6 +4,8 @@ import BankDetail from './Components/BankDetail'
 import TransactionManager from './Components/TransactionManager'
 import { createEffect, createSignal, JSXElement } from 'solid-js'
 
+const BASE_PATH = '/bankdetailsui/';
+
 interface NavigationProps {
     children?: JSXElement
 }
@@ -13,7 +15,8 @@ const Navigation = (props: NavigationProps) => {
     const [bankActive, setBankActive] = createSignal(true)
 
     createEffect(() => {
-        setBankActive(location.pathname === '/new-bank-transactions')
+        console.log('Location changed:', location.pathname)
+        setBankActive(location.pathname === `${BASE_PATH}new-bank-transactions`)
     })
 
     return (
@@ -24,7 +27,7 @@ const Navigation = (props: NavigationProps) => {
                     <ul class="menu menu-horizontal rounded-box">
                         <li>
                             <A
-                                href="/"
+                                href={`${BASE_PATH}/`}
                                 class={bankActive() ? '' : 'menu-active'}
                             >
                                 Bank Details
@@ -32,7 +35,7 @@ const Navigation = (props: NavigationProps) => {
                         </li>
                         <li>
                             <A
-                                href="/new-bank-transactions"
+                                href={`${BASE_PATH}new-bank-transactions`}
                                 class={bankActive() ? 'menu-active' : ''}
                             >
                                 New Bank Transactions
@@ -48,9 +51,16 @@ const Navigation = (props: NavigationProps) => {
 function App() {
     return (
         <Router root={Navigation}>
-            <Route path="/" component={BankDetail} />
+            <Route 
+                path={`/`}
+                component={BankDetail} 
+            />
+            <Route 
+                path={`${BASE_PATH}/`}
+                component={BankDetail} 
+            />
             <Route
-                path="/new-bank-transactions"
+                path={`${BASE_PATH}/new-bank-transactions`}
                 component={TransactionManager}
             />
         </Router>
