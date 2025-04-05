@@ -1,5 +1,6 @@
-import { createSignal, createEffect} from 'solid-js'
-import { IBankDetail} from '../Types/BankDetail'
+import { createSignal, createEffect, onCleanup } from 'solid-js'
+import { IBankDetail, IBankDetailStorage } from '../Types/BankDetail'
+import { AutoSaver } from '../Services/IBankDetailSaver'
 
 const BankDetailsForm = (props: {
     addBankDetail: (detail: IBankDetail) => void
@@ -16,7 +17,9 @@ const BankDetailsForm = (props: {
         accountNumber: '',
         ifscCode: '',
     })
+    const autosaver = new AutoSaver<IBankDetailStorage>('bankDetails', 10)
 
+    // Effect to update formData whenever any field changes
     createEffect(() => {
         setFormData({
             serialNubmer: serialNumber(),
@@ -25,6 +28,29 @@ const BankDetailsForm = (props: {
             accountNumber: accountNumber(),
             ifscCode: ifscCode(),
         })
+    })
+
+    // Effect to save formData every 10 seconds if data is available
+    createEffect(() => {
+        const interval = setInterval(() => {
+            const data = formData()
+            if (data.id && data.name && data.accountNumber && data.ifscCode) {
+                autosaver.save({
+                    ...data,
+                    data: [
+                        {
+                            serialNubmer: data.serialNubmer,
+                            id: data.id,
+                            name: data.name,
+                            accountNumber: data.accountNumber,
+                            ifscCode: data.ifscCode,
+                        },
+                    ],
+                })
+            }
+        }, 10000)
+
+        onCleanup(() => clearInterval(interval))
     })
 
     const focusNextInput = (e: KeyboardEvent, nextInputId: string | null) => {

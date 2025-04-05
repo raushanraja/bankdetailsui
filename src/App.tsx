@@ -23,7 +23,7 @@ const Navigation = (props: NavigationProps) => {
         <>
             <nav class="navbar bg-gray-700 shadow-sm">
                 <div class="flex-1">
-                    <span class="m-12 text-xl"></span>
+                    <span class="m-12 text-xl" />
                     <ul class="menu menu-horizontal rounded-box">
                         <li>
                             <A

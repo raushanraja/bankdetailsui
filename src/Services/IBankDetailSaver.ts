@@ -15,6 +15,7 @@ export class AutoSavedInfo {
         this.lastSaved = new Date()
         this.firstVersion = 1
         this.lastVersion = 0
+        this.updateLastSaved = this.updateLastSaved.bind(this) // Bind method
     }
 
     init(firstVersion: number, lastVersion: number, lastSaved: Date) {
@@ -98,6 +99,14 @@ export class AutoSaver<T extends RequiredProperties> implements IAutoSaver<T> {
         this.key = key
         this.maxVersions = maxVersions
         this.autoSavedInfo = AutoSavedInfo.fromLocalStorage(key)
+        this.save = this.save.bind(this) // Bind method
+        this.clearOldVersions = this.clearOldVersions.bind(this) // Bind method
+        this.getAllSavedVersions = this.getAllSavedVersions.bind(this) // Bind method
+        this.clearAllVersions = this.clearAllVersions.bind(this) // Bind method
+        this.clearVersion = this.clearVersion.bind(this) // Bind method
+        this.getVersionCount = this.getVersionCount.bind(this) // Bind method
+        this.getVersion = this.getVersion.bind(this) // Bind method
+        this.getNextVersionKey = this.getNextVersionKey.bind(this) // Bind method
     }
 
     async save(data: T & { data: unknown[] }): Promise<void> {
@@ -191,6 +200,11 @@ export interface IDataSaver<T> {
 
 // Implementation for saving to JSON
 export class JsonDataSaver<T> implements IDataSaver<T> {
+    constructor() {
+        this.save = this.save.bind(this) // Bind method
+        this.downloadJsonFile = this.downloadJsonFile.bind(this) // Bind method
+    }
+
     downloadJsonFile(data: string): void {
         const blob = new Blob([data], { type: 'application/json' })
         const url = URL.createObjectURL(blob)
@@ -218,6 +232,10 @@ export class JsonDataSaver<T> implements IDataSaver<T> {
 
 // Implementation for saving to an API
 export class ApiDataSaver<T> implements IDataSaver<T> {
+    constructor() {
+        this.save = this.save.bind(this) // Bind method
+    }
+
     async save(data: T[]): Promise<void> {
         console.log('Saving to API:', data)
 
@@ -236,6 +254,10 @@ export class ApiDataSaver<T> implements IDataSaver<T> {
 
 // Implementation for saving to both JSON and API
 export class BothDataSaver<T> implements IDataSaver<T> {
+    constructor() {
+        this.save = this.save.bind(this) // Bind method
+    }
+
     async save(data: T[]): Promise<void> {
         if (!hasData(data)) {
             alert('No data to save')

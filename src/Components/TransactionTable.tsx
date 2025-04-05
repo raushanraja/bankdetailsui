@@ -1,5 +1,6 @@
-import { Component, For } from 'solid-js'
-import { ITransactionDetail } from '../Types/TransactionDetail'
+import { Component, createEffect, For, onCleanup } from 'solid-js'
+import { ITransactionDetail, ITransactionDetailStorage } from '../Types/TransactionDetail'
+import { AutoSaver } from '../Services/IBankDetailSaver'
 
 type TransactionTableProps = {
     transactionList: ITransactionDetail[]
@@ -7,6 +8,26 @@ type TransactionTableProps = {
 }
 
 const TransactionTable: Component<TransactionTableProps> = (props) => {
+    const autosaver = new AutoSaver<ITransactionDetailStorage>('bankTransactions', 10)
+
+    createEffect(() => {
+        const interval = setInterval(() => {
+            const data = props.transactionList
+            if (data.length > 0) {
+                const storage_data: ITransactionDetailStorage = {
+                    id: 0,
+                    name: 'bankTransactions',
+                    data,
+                }
+                autosaver.save(storage_data).then(() => {
+                    console.log('Transactions saved successfully')
+                })
+            }
+        }, 3000)
+
+        onCleanup(() => clearInterval(interval))
+    })
+
     return (
         <div class="container">
             <div class="rounded-box border-base-content/5 bg-base-300 h-[800px] border">
