@@ -1,5 +1,5 @@
-import { createSignal, createEffect} from 'solid-js'
-import { IBankDetail} from '../Types/BankDetail'
+import { createSignal, createEffect } from 'solid-js'
+import { IBankDetail } from '../Types/BankDetail'
 
 const BankDetailsForm = (props: {
     addBankDetail: (detail: IBankDetail) => void

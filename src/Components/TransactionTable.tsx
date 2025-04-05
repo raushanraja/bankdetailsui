@@ -1,5 +1,8 @@
-import { Component, createEffect, For, onCleanup } from 'solid-js'
-import { ITransactionDetail, ITransactionDetailStorage } from '../Types/TransactionDetail'
+import { Component, createEffect, For } from 'solid-js'
+import {
+    ITransactionDetail,
+    ITransactionDetailStorage,
+} from '../Types/TransactionDetail'
 import { AutoSaver } from '../Services/IBankDetailSaver'
 
 type TransactionTableProps = {
@@ -8,7 +11,10 @@ type TransactionTableProps = {
 }
 
 const TransactionTable: Component<TransactionTableProps> = (props) => {
-    const autosaver = new AutoSaver<ITransactionDetailStorage>('bankTransactions', 200) // Update maxVersions to 200
+    const autosaver = new AutoSaver<ITransactionDetailStorage>(
+        'bankTransactions',
+        200,
+    ) // Update maxVersions to 200
 
     createEffect(() => {
         const data = props.transactionList

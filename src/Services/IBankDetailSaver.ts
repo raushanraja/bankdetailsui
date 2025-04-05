@@ -97,7 +97,8 @@ export class AutoSaver<T extends RequiredProperties> implements IAutoSaver<T> {
     private key: string
     private autoSavedInfo: AutoSavedInfo
 
-    constructor(key: string, maxVersions: number = 200) { // Set maxVersions to 200
+    constructor(key: string, maxVersions: number = 200) {
+        // Set maxVersions to 200
         this.key = key
         this.maxVersions = maxVersions
         this.autoSavedInfo = AutoSavedInfo.fromLocalStorage(key)
@@ -238,7 +239,6 @@ export class ApiDataSaver<T> implements IDataSaver<T> {
     }
 
     async save(data: T[]): Promise<void> {
-
         if (!hasData(data)) {
             alert('No data to save')
             return

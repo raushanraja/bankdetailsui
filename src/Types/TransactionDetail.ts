@@ -1,4 +1,4 @@
-import { AutoSaveKeys } from "../Services/IBankDetailSaver"
+import { AutoSaveKeys } from '../Services/IBankDetailSaver'
 
 export interface ITransactionDetail {
     id: string

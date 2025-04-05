@@ -4,7 +4,7 @@ import BankDetail from './Components/BankDetail'
 import TransactionManager from './Components/TransactionManager'
 import { createEffect, createSignal, JSXElement } from 'solid-js'
 
-const BASE_PATH = '/bankdetailsui/';
+const BASE_PATH = '/bankdetailsui/'
 
 interface NavigationProps {
     children?: JSXElement
@@ -50,14 +50,8 @@ const Navigation = (props: NavigationProps) => {
 function App() {
     return (
         <Router root={Navigation}>
-            <Route 
-                path={`/`}
-                component={BankDetail} 
-            />
-            <Route 
-                path={`${BASE_PATH}/`}
-                component={BankDetail} 
-            />
+            <Route path={`/`} component={BankDetail} />
+            <Route path={`${BASE_PATH}/`} component={BankDetail} />
             <Route
                 path={`${BASE_PATH}/new-bank-transactions`}
                 component={TransactionManager}
