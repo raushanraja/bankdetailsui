@@ -1,0 +1,53 @@
+--- a/src/Components/BankForm.tsx
++++ b/src/Components/BankForm.tsx
+@@ -20,6 +20,10 @@
+     })
+   })
+ 
++  const focusNextInput = (e: KeyboardEvent, nextInputId: string) => {
++    if (e.key === 'Enter') { e.preventDefault(); document.getElementById(nextInputId)?.focus(); }
++  }
++
+   const handleSubmit = (e: Event) => {
+     e.preventDefault()
+     console.log('Form Data:', formData())
+@@ -47,6 +51,7 @@
+             id="id"
+             value={id()}
+             onInput={(e) => setId(e.currentTarget.value)}
++            onKeyDown={(e) => focusNextInput(e, 'name')}
+           />
+         </div>
+ 
+@@ -64,6 +69,7 @@
+             id="name"
+             value={name()}
+             onInput={(e) => setName(e.currentTarget.value)}
++            onKeyDown={(e) => focusNextInput(e, 'accountNumber')}
+           />
+         </div>
+ 
+@@ -81,6 +87,7 @@
+             id="accountNumber"
+             value={accountNumber()}
+             onInput={(e) => setAccountNumber(e.currentTarget.value)}
++            onKeyDown={(e) => focusNextInput(e, 'ifscCode')}
+           />
+         </div>
+ 
+@@ -98,6 +105,7 @@
+             id="ifscCode"
+             value={ifscCode()}
+             onInput={(e) => setIfscCode(e.currentTarget.value)}
++            onKeyDown={(e) => focusNextInput(e, 'amount')}
+           />
+         </div>
+ 
+@@ -115,6 +123,7 @@
+             id="amount"
+             value={amount()}
+             onInput={(e) => setAmount(e.currentTarget.value)}
++            onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault() } }} // Prevent form submission on last field
+           />
+         </div>
+ 
