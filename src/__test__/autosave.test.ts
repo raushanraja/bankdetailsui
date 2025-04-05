@@ -1,4 +1,4 @@
-import { AutoSaveKeys, AutoSaver } from '../Services/IBankDetailSaver'
+import { AutoSavedInfo, AutoSaveKeys, AutoSaver } from '../Services/IBankDetailSaver'
 import { IBankDetailStorage } from '../Types/BankDetail'
 import { faker } from '@faker-js/faker'
 
@@ -110,4 +110,25 @@ describe('AutoSaver BankDetails', () => {
         const versions = await autoSaver.getAllSavedVersions()
         expect(versions.length).toEqual(maxVersions)
     })
+
+    test('should read data autosaveInfo from localStorage', async () => {
+        const autoSaveInfo:AutoSavedInfo = new AutoSavedInfo();
+        let date = new Date()
+        autoSaveInfo.lastSaved = date
+        autoSaveInfo.firstVersion = 1
+        autoSaveInfo.lastVersion = 5
+        autoSaveInfo.total = 5
+
+
+        AutoSavedInfo.saveToLocalStorage('bankDetails', autoSaveInfo)
+        const fetchedInfo = AutoSavedInfo.fromLocalStorage('bankDetails')
+
+        expect(fetchedInfo).toBeDefined()
+        expect(fetchedInfo.firstVersion).toEqual(1)
+        expect(fetchedInfo.lastVersion).toEqual(5)
+        expect(fetchedInfo.total).toEqual(5)
+        expect(fetchedInfo.lastSaved).toBeInstanceOf(Date)
+        expect(fetchedInfo.lastSaved).toEqual(date)
+    })
+
 })

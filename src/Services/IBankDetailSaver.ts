@@ -16,25 +16,26 @@ export class AutoSavedInfo {
         this.firstVersion = 1
         this.lastVersion = 0
         this.updateLastSaved = this.updateLastSaved.bind(this) // Bind method
-    }
-
-    init(firstVersion: number, lastVersion: number, lastSaved: Date) {
-        this.firstVersion = firstVersion
-        this.lastVersion = lastVersion
-        this.lastSaved = lastSaved
+        this.toJSON = this.toJSON.bind(this) // Bind method
     }
 
     toJSON(): string {
         return JSON.stringify({
             total: this.total,
-            lastversion: this.lastVersion,
+            lastVersion: this.lastVersion,
             firstVersion: this.firstVersion,
             lastSaved: this.lastSaved,
         })
     }
 
     static fromJSON(json: string): AutoSavedInfo {
-        return JSON.parse(json)
+        const parsedData = JSON.parse(json)
+        const info = new AutoSavedInfo()
+        info.total = parsedData['total']
+        info.firstVersion = parsedData['firstVersion']
+        info.lastVersion = parsedData['lastVersion']
+        info.lastSaved = new Date(parsedData['lastSaved'])
+        return info
     }
 
     static fromLocalStorage(key: string): AutoSavedInfo {
