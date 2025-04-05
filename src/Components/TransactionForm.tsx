@@ -10,17 +10,35 @@ const TransactionForm = (props: {
     const [accountNumber, setAccountNumber] = createSignal('')
     const [ifscCode, setIfscCode] = createSignal('')
     const [amount, setAmount] = createSignal('')
+    const [manualEntry, setManualEntry] = createSignal(false)
 
     const fetchUserDetails = async (id: string) => {
-        // Simulate fetching user details from the backend
-        const response = await fetch(`/api/user/${id}`)
-        if (response.ok) {
-            const data = await response.json()
-            setName(data.name)
-            setAccountNumber(data.accountNumber)
-            setIfscCode(data.ifscCode)
-        } else {
-            alert('User not found')
+        if (!manualEntry()) {
+            // Simulate fetching user details from the backend
+            const response = await fetch(`/api/user/${id}`)
+            if (response.ok) {
+                const data = await response.json()
+                setName(data.name)
+                setAccountNumber(data.accountNumber)
+                setIfscCode(data.ifscCode)
+            } else {
+                alert('User not found')
+            }
+        }
+    }
+
+    const focusNextInput = (e: KeyboardEvent, nextInputId: string | null) => {
+        if (e.key === 'Enter') {
+            e.preventDefault()
+            if (nextInputId) {
+                document.getElementById(nextInputId)?.focus()
+            } else {
+                ;(
+                    document.querySelector(
+                        'button[type="submit"]',
+                    ) as HTMLButtonElement
+                )?.focus()
+            }
         }
     }
 
@@ -46,9 +64,22 @@ const TransactionForm = (props: {
 
     return (
         <div class="bg-base-300 w-150 rounded-lg px-5">
-            <h2 class="mb-4 w-40 text-2xl font-semibold">Transaction Form</h2>
+            <h2 class="mb-4 w-40 text-2xl font-semibold">Add</h2>
             <div class="p-5">
                 <form class="space-y-4" onSubmit={handleSubmit}>
+                    {/* Toggle Manual Entry */}
+                    <div class="form-control">
+                        <label class="label cursor-pointer">
+                            <span class="label-text">Manual Entry</span>
+                            <input
+                                type="checkbox"
+                                class="toggle toggle-primary"
+                                checked={manualEntry()}
+                                onChange={() => setManualEntry(!manualEntry())}
+                            />
+                        </label>
+                    </div>
+
                     {/* ID */}
                     <div class="form-control">
                         <label class="label" for="id">
@@ -79,6 +110,10 @@ const TransactionForm = (props: {
                             id="name"
                             value={name()}
                             onInput={(e) => setName(e.currentTarget.value)}
+                            onKeyDown={(e) =>
+                                focusNextInput(e, 'accountNumber')
+                            }
+                            disabled={!manualEntry()}
                         />
                     </div>
 
@@ -97,6 +132,8 @@ const TransactionForm = (props: {
                             onInput={(e) =>
                                 setAccountNumber(e.currentTarget.value)
                             }
+                            onKeyDown={(e) => focusNextInput(e, 'ifscCode')}
+                            disabled={!manualEntry()}
                         />
                     </div>
 
@@ -113,6 +150,8 @@ const TransactionForm = (props: {
                             id="ifscCode"
                             value={ifscCode()}
                             onInput={(e) => setIfscCode(e.currentTarget.value)}
+                            onKeyDown={(e) => focusNextInput(e, 'amount')}
+                            disabled={!manualEntry()}
                         />
                     </div>
 
@@ -129,6 +168,7 @@ const TransactionForm = (props: {
                             id="amount"
                             value={amount()}
                             onInput={(e) => setAmount(e.currentTarget.value)}
+                            onKeyDown={(e) => focusNextInput(e, null)}
                         />
                     </div>
 

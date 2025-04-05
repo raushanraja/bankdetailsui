@@ -2,10 +2,11 @@ import { createSignal } from 'solid-js'
 import BankDetailsForm from './BankForm'
 import BankDetailsTable from './BankDetailsTable'
 import { IBankDetail } from '../Types/BankDetail'
-import { BankDetailSaverFactory } from '../Services/IBankDetailSaver'
+import { DataSaverFactory, IDataSaver } from '../Services/IBankDetailSaver'
+
+const bankDetailSaver: IDataSaver<IBankDetail> = DataSaverFactory.create('both')
 
 const BankDetail = () => {
-    const saver = BankDetailSaverFactory.create('both')
     const [detailsList, setDetailsList] = createSignal<IBankDetail[]>([])
 
     const addBankDetail = async (detail: IBankDetail) => {
@@ -15,7 +16,7 @@ const BankDetail = () => {
     const saveBankDetails = async () => {
         const details = detailsList()
         if (details.length > 0) {
-            await saver.save(details)
+            await bankDetailSaver.save(details)
         } else {
             alert('No bank details to save')
         }

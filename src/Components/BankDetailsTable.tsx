@@ -14,7 +14,7 @@ const BankDetailsTable: Component<BankDetailsTableProps> = (props) => {
                 <table class="table-zebra table w-full">
                     <thead>
                         <tr>
-                            <th>SNo.</th>{' '}
+                            <th>SNo.</th>
                             {/* Ensure Serial No. column header is present */}
                             <th>Code</th>
                             <th>Name</th>
@@ -25,8 +25,7 @@ const BankDetailsTable: Component<BankDetailsTableProps> = (props) => {
                     <tbody>
                         {props.detailsList.map((detail) => (
                             <tr>
-                                <td>{detail.serialNubmer}</td>{' '}
-                                {/* Display Serial No. */}
+                                <td>{detail.serialNubmer}</td>
                                 <td>{detail.id}</td>
                                 <td>{detail.name}</td>
                                 <td>{detail.accountNumber}</td>
@@ -36,12 +35,14 @@ const BankDetailsTable: Component<BankDetailsTableProps> = (props) => {
                     </tbody>
                 </table>
             </div>
-            <button
-                class="btn btn-primary float-end w-full"
-                onclick={props.saveBankDetails}
-            >
-                Save
-            </button>
+            <div class="flex justify-end">
+                <button
+                    class="btn-primary btn mt-4"
+                    onClick={props.saveBankDetails}
+                >
+                    Save Bank Details
+                </button>
+            </div>
         </div>
     )
 }

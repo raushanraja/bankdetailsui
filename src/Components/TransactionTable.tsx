@@ -3,6 +3,7 @@ import { ITransactionDetail } from '../Types/TransactionDetail'
 
 type TransactionTableProps = {
     transactionList: ITransactionDetail[]
+    saveTransactions: () => void
 }
 
 const TransactionTable: Component<TransactionTableProps> = (props) => {
@@ -32,6 +33,14 @@ const TransactionTable: Component<TransactionTableProps> = (props) => {
                         ))}
                     </tbody>
                 </table>
+            </div>
+            <div class="flex justify-end">
+                <button
+                    class="btn-primary btn mt-4"
+                    onClick={props.saveTransactions}
+                >
+                    Save Transactions
+                </button>
             </div>
         </div>
     )

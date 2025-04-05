@@ -1,85 +1,82 @@
-import { IBankDetail } from '../Types/BankDetail'
-
-// Utility function to check if bank details are not empty
-export function hasBankDetails(detail: IBankDetail[]): boolean {
-    return detail.length > 0
+export function hasData<T>(data: T[]): boolean {
+    return data.length > 0
 }
 
-// Interface for saving bank details
-export interface IBankDetailSaver {
-    save(detail: IBankDetail[]): Promise<void>
+// Interface for saving data
+export interface IDataSaver<T> {
+    save(data: T[]): Promise<void>
 }
 
 // Implementation for saving to JSON
-export class JsonBankDetailSaver implements IBankDetailSaver {
+export class JsonDataSaver<T> implements IDataSaver<T> {
     downloadJsonFile(data: string): void {
         const blob = new Blob([data], { type: 'application/json' })
         const url = URL.createObjectURL(blob)
         const a = document.createElement('a')
         const jsonDate = new Date().toJSON()
         a.href = url
-        a.download = `bank-details${jsonDate}.json`
+        a.download = `data-${jsonDate}.json`
         document.body.appendChild(a)
         a.click()
         document.body.removeChild(a)
         URL.revokeObjectURL(url)
     }
 
-    async save(detail: IBankDetail[]): Promise<void> {
-        if (!hasBankDetails(detail)) {
-            alert('No bank details to save')
+    async save(data: T[]): Promise<void> {
+        if (!hasData(data)) {
+            alert('No data to save')
             return
         }
 
-        const data = JSON.stringify(detail, null, 2)
-        console.log('Saving to JSON:', data)
-        this.downloadJsonFile(data)
+        const jsonData = JSON.stringify(data, null, 2)
+        console.log('Saving to JSON:', jsonData)
+        this.downloadJsonFile(jsonData)
     }
 }
 
 // Implementation for saving to an API
-export class ApiBankDetailSaver implements IBankDetailSaver {
-    async save(detail: IBankDetail[]): Promise<void> {
-        console.log('Saving to API:', detail)
+export class ApiDataSaver<T> implements IDataSaver<T> {
+    async save(data: T[]): Promise<void> {
+        console.log('Saving to API:', data)
 
-        if (!hasBankDetails(detail)) {
-            alert('No bank details to save')
+        if (!hasData(data)) {
+            alert('No data to save')
             return
         }
 
-        await fetch('/api/bank-details', {
+        await fetch('/api/data', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(detail),
+            body: JSON.stringify(data),
         })
     }
 }
 
 // Implementation for saving to both JSON and API
-export class BothBankDetailSaver implements IBankDetailSaver {
-    async save(detail: IBankDetail[]): Promise<void> {
-        if (!hasBankDetails(detail)) {
-            alert('No bank details to save')
+export class BothDataSaver<T> implements IDataSaver<T> {
+    async save(data: T[]): Promise<void> {
+        if (!hasData(data)) {
+            alert('No data to save')
             return
         }
 
-        const jsonSaver = new JsonBankDetailSaver()
-        const apiSaver = new ApiBankDetailSaver()
-        await jsonSaver.save(detail)
-        await apiSaver.save(detail)
+        const jsonSaver = new JsonDataSaver<T>()
+        const apiSaver = new ApiDataSaver<T>()
+        await jsonSaver.save(data)
+        await apiSaver.save(data)
     }
 }
 
 // Factory for creating savers
-export class BankDetailSaverFactory {
-    static create(saverType: 'json' | 'api' | 'both'): IBankDetailSaver {
+export class DataSaverFactory {
+    static create<T>(saverType: 'json' | 'api' | 'both'): IDataSaver<T> {
         switch (saverType) {
             case 'json':
-                return new JsonBankDetailSaver()
+                return new JsonDataSaver<T>()
             case 'api':
-                return new ApiBankDetailSaver()
+                return new ApiDataSaver<T>()
             case 'both':
-                return new BothBankDetailSaver()
+                return new BothDataSaver<T>()
             default:
                 throw new Error('Invalid saver type')
         }
