@@ -3,6 +3,7 @@ import { A, Route, Router, useLocation } from '@solidjs/router'
 import BankDetail from './Components/BankDetail'
 import TransactionManager from './Components/TransactionManager'
 import { createEffect, createSignal, JSXElement } from 'solid-js'
+import ImportBankDetails from './Components/ImportBankDetails'
 
 const BASE_PATH = '/bankdetailsui/'
 
@@ -22,6 +23,7 @@ const Navigation = (props: NavigationProps) => {
         <>
             <nav class="navbar bg-gray-700 shadow-sm">
                 <div class="flex-1">
+                    <ImportBankDetails />
                     <span class="m-12 text-xl" />
                     <ul class="menu menu-horizontal rounded-box">
                         <li>

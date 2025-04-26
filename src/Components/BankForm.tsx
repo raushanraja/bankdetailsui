@@ -1,6 +1,35 @@
 import { createSignal, createEffect } from 'solid-js'
 import { IBankDetail } from '../Types/BankDetail'
 
+const texts = {
+    EN: {
+        bankForm: 'Bank Form',
+        idLabel: 'ID (Max 5 Digits):',
+        idPlaceholder: 'Enter ID',
+        nameLabel: 'Name:',
+        namePlaceholder: 'Enter Name',
+        accountNumberLabel: 'Account Number:',
+        accountNumberPlaceholder: 'Enter Account Number',
+        ifscCodeLabel: 'IFSC Code:',
+        ifscCodePlaceholder: 'Enter IFSC Code',
+        submit: 'Submit',
+    },
+    HI: {
+        bankForm: 'बैंक फॉर्म',
+        idLabel: 'आईडी (अधिकतम 5 अंक):',
+        idPlaceholder: 'आईडी दर्ज करें',
+        nameLabel: 'नाम:',
+        namePlaceholder: 'नाम दर्ज करें',
+        accountNumberLabel: 'खाता संख्या:',
+        accountNumberPlaceholder: 'खाता संख्या दर्ज करें',
+        ifscCodeLabel: 'आईएफएससी कोड:',
+        ifscCodePlaceholder: 'आईएफएससी कोड दर्ज करें',
+        submit: 'जोड़ें',
+    },
+}
+
+const language = (localStorage.getItem('language') as 'EN' | 'HI') || 'HI'
+
 const BankDetailsForm = (props: {
     addBankDetail: (detail: IBankDetail) => void
 }) => {
@@ -54,17 +83,21 @@ const BankDetailsForm = (props: {
 
     return (
         <div class="bg-base-300 w-150 rounded-lg px-5">
-            <h2 class="mb-4 w-40 text-2xl font-semibold">Bank Form</h2>
+            <h2 class="mb-4 w-40 text-2xl font-semibold">
+                {texts[language].bankForm}
+            </h2>
             <div class="p-5">
                 <form class="space-y-4" onSubmit={handleSubmit}>
                     {/* ID */}
                     <div class="form-control">
                         <label class="label" for="id">
-                            <span class="label-text">ID (Max 5 Digits):</span>
+                            <span class="label-text">
+                                {texts[language].idLabel}
+                            </span>
                         </label>
                         <input
                             type="number"
-                            placeholder="Enter ID"
+                            placeholder={texts[language].idPlaceholder}
                             class="input input-bordered w-full"
                             maxLength="5"
                             min="1"
@@ -80,11 +113,13 @@ const BankDetailsForm = (props: {
                     {/* Name */}
                     <div class="form-control">
                         <label class="label" for="name">
-                            <span class="label-text">Name:</span>
+                            <span class="label-text">
+                                {texts[language].nameLabel}
+                            </span>
                         </label>
                         <input
                             type="text"
-                            placeholder="Enter Name"
+                            placeholder={texts[language].namePlaceholder}
                             class="input input-bordered w-full"
                             required
                             id="name"
@@ -99,11 +134,15 @@ const BankDetailsForm = (props: {
                     {/* Account Number */}
                     <div class="form-control">
                         <label class="label" for="accountNumber">
-                            <span class="label-text">Account Number:</span>
+                            <span class="label-text">
+                                {texts[language].accountNumberLabel}
+                            </span>
                         </label>
                         <input
                             type="text"
-                            placeholder="Enter Account Number"
+                            placeholder={
+                                texts[language].accountNumberPlaceholder
+                            }
                             class="input input-bordered w-full"
                             required
                             id="accountNumber"
@@ -118,11 +157,13 @@ const BankDetailsForm = (props: {
                     {/* IFSC Code */}
                     <div class="form-control">
                         <label class="label" for="ifscCode">
-                            <span class="label-text">IFSC Code:</span>
+                            <span class="label-text">
+                                {texts[language].ifscCodeLabel}
+                            </span>
                         </label>
                         <input
                             type="text"
-                            placeholder="Enter IFSC Code"
+                            placeholder={texts[language].ifscCodePlaceholder}
                             class="input input-bordered w-full"
                             required
                             id="ifscCode"
@@ -136,7 +177,7 @@ const BankDetailsForm = (props: {
                         class="btn btn-primary float-end w-full"
                         type="submit"
                     >
-                        Submit
+                        {texts[language].submit}
                     </button>
                 </form>
             </div>
